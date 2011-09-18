@@ -1,2 +1,2 @@
-tmp/pids/*
+tmp/pids/*.pid
 tmp/cache/*

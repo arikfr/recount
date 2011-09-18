@@ -4,6 +4,11 @@ require 'em-http/middleware/json_response'
 require 'yajl'
 require_relative 'counter'
 
+unless ENV["REDISTOGO_URL"].nil?
+  uri = URI.parse(ENV["REDISTOGO_URL"])
+  ReCount::Counter.redis_connection = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+end
+
 module ReCount
   class Increment < Goliath::API
 

@@ -1,8 +1,5 @@
 require 're_count/counter'
 
-
-ReCount::Counter.redis_connection = Redis.new(:port => 9736)
-
 describe ReCount::Counter do
   let (:counter_name) { "test_#{(rand * 10000).to_i}" }
   let (:counter) { ReCount::Counter.new(counter_name) }
@@ -26,9 +23,10 @@ describe ReCount::Counter do
     end
 
     it 'returns set value if is set' do
+      redis_connection = ReCount::Counter.redis_connection
       ReCount::Counter.redis_connection = :redis
       ReCount::Counter.redis_connection.should eql(:redis)
-      ReCount::Counter.redis_connection = Redis.new(:port => 9736)
+      ReCount::Counter.redis_connection = redis_connection
     end
   end
 

@@ -61,5 +61,8 @@ RSpec.configure do |config|
         rm -f #{REDIS_CACHE_PATH}dump.rdb
       }
     end
+
+    require 're_count/counter'
+    ReCount::Counter.redis_connection = Redis.new(:port => 9736)
   end
 end

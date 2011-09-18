@@ -1,8 +1,6 @@
 require 're_count/server'
 require 'goliath/test_helper'
 
-ReCount::Counter.redis_connection = Redis.new(:port => 9736)
-
 describe ReCount::Server do
   include Goliath::TestHelper
 

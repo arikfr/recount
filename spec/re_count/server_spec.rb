@@ -36,6 +36,12 @@ describe ReCount::Server do
         c.response_header.status.should == 200
       end
     end
+
+    it 'returns new today value' do
+      test_post_request('/counters/test/increment') do |c|
+        Yajl::Parser.parse(c.response).include?("day").should be_true
+      end
+    end
   end
 
   describe 'GET /counters/:counter_name' do

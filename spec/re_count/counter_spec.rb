@@ -60,6 +60,11 @@ describe ReCount::Counter do
         }.should change{counter.day_value(yesterday)}.by(1)
       end
     end
+
+    it 'returns new value' do
+      counter.increase.should eql(1)
+      counter.increase.should eql(2)
+    end
   end
 
 

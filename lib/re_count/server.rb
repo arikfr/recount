@@ -14,9 +14,9 @@ module ReCount
 
     def response(env)
       counter = ReCount::Counter.new params[:name]
-      counter.increase
+      new_value = counter.increase
 
-      [200, {'Content-Type' => 'application/json'}, counter.to_object]
+      [200, {'Content-Type' => 'application/json'}, {day: new_value}]
     end
 
   end

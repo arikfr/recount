@@ -44,6 +44,40 @@ describe ReCount::Server do
     end
   end
 
+  describe 'GET /counters' do
+    let (:names) { ['test_all1', 'test_all2'] }
+
+    before :each do
+      names.each { |name| ReCount::Counter.new(name).increase }
+    end
+
+    it 'returns list of all counters in the system' do
+      test_get_request('/counters') do |c|
+        response = Yajl::Parser.parse(c.response)
+        response.include?('counters').should be_true
+        response['counters'].should =~ names
+      end
+    end
+
+    it 'returns list of all counters with their data when passed extended param' do
+      results = names.map do |name|
+        ReCount::Counter.new(name).to_object.inject({}){|memo,(k,v)| memo[k.to_s] = v; memo}
+      end
+
+      test_get_request('/counters?extended') do |c|
+        response = Yajl::Parser.parse(c.response)
+        response.include?('counters').should be_true
+        response['counters'].should eql(results)
+      end
+    end
+
+    it 'returns status code 200' do
+      test_get_request('/counters') do |c|
+        c.response_header.status.should == 200
+      end
+    end
+  end
+
   describe 'GET /counters/:counter_name' do
     it 'returns json with current counter values' do |c|
       test_get_request('/counters/test') do |c|

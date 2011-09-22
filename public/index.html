@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>ReCount</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/javascripts/underscore-min.js" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      $(function() {
+        var template = "<tr><td><%=name%></td><td><%=day%></td><td><%=month%></td><td><%=year%></td><td><%=total%></td></tr>";
+        $.get('/counters?extended', function(data) {
+          _.each(data.counters, function(counter) {
+            $('table.counters').append(_.template(template, counter));
+          });
+        });
+      });
+    </script>
+    <style type="text/css" media="screen">
+      .counters {
+      }
+    </style>
+  </head>
+  <body>
+    <table class="counters">
+      <tr>
+        <th>Name</th>
+        <th>Today</th>
+        <th>Month</th>
+        <th>Year</th>
+        <th>Total</th>
+      </tr>
+    </table>
+  </body>
+</html>

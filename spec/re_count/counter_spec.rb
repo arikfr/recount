@@ -30,6 +30,14 @@ describe ReCount::Counter do
     end
   end
 
+  describe '.all' do
+    it 'returns list of all counter names' do
+      ReCount::Counter.new('test_all1').increase
+      ReCount::Counter.new('test_all2').increase
+      ReCount::Counter.all.should =~ ['test_all1', 'test_all2']
+    end
+  end
+
   describe '#increase' do
     context 'no arguments' do
       it "increases total value by 1" do
@@ -139,6 +147,10 @@ describe ReCount::Counter do
 
     it 'returns hash with total value' do
       counter.to_object[:total].should eql(1+1+2+3)
+    end
+
+    it 'includes name of counter in the hash' do
+      counter.to_object[:name].should eql(counter.name)
     end
 
     it 'updates after another increase' do

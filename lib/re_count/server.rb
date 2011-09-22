@@ -9,6 +9,8 @@ unless ENV["REDISTOGO_URL"].nil?
   ReCount::Counter.redis_connection = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 end
 
+PUBLIC_PATH = File.expand_path(File.dirname(__FILE__) + '../../../public')
+
 module ReCount
   class Increment < Goliath::API
 
@@ -22,16 +24,29 @@ module ReCount
   end
 
   class Values < Goliath::API
-
     def response(env)
       counter = ReCount::Counter.new params[:name]
 
       [200, {'Content-Type' => 'application/json'}, counter.to_object]
     end
+  end
 
+  class Counters < Goliath::API
+    def response(env)
+      counters = ReCount::Counter.all
+      if params.include? 'extended'
+        counters = counters.map do |name|
+          ReCount::Counter.new(name).to_object
+        end
+      end
+
+      [200, {'Content-Type' => 'application/json'}, {counters: counters}]
+    end
   end
 
   class Server < Goliath::API
+    use Rack::Static, :urls => ["/favicon.ico", "/index.html", "/css", "/images", "/javascripts"],
+                      :root => PUBLIC_PATH
     use Goliath::Rack::Params
     use Goliath::Rack::Formatters::JSON
 
@@ -41,6 +56,10 @@ module ReCount
 
     get '/counters/:name' do
       run Values.new
+    end
+
+    get '/counters' do
+      run Counters.new
     end
 
     not_found('/') do

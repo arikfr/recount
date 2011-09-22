@@ -19,6 +19,10 @@ module ReCount
       @@redis_connection = redis_connection
     end
 
+    def self.all
+      redis_connection.smembers "counters"
+    end
+
     def increase(value=1, day=Time.now)
       add_to_months_set(day)
       update_value_for_day(day, value)
@@ -44,7 +48,8 @@ module ReCount
     end
 
     def to_object
-      @object ||= {
+      {
+        name: name,
         day: day_value,
         month: month_value,
         year: year_value,
@@ -70,11 +75,11 @@ module ReCount
     end
 
     def update_value_for_day(date, value)
-      @object = nil
       @redis.hincrby(redis_key_for_month(date), date.day, value)
     end
 
     def add_to_months_set(date)
+      @redis.sadd "counters", name
       @redis.zadd "#{redis_key}:months", date.strftime("%Y%m"), redis_key_for_month(date)
     end
   end

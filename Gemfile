@@ -1,7 +1,6 @@
 # A sample Gemfile
 source "http://rubygems.org"
 
-# gem "rails"
 gem 'redis'
 gem 'goliath'
 gem 'em-http-request'
@@ -14,4 +13,7 @@ end
 
 group :test do
   gem 'rspec'
+  gem 'guard-rspec'
+  gem 'rb-fsevent'
+  gem 'growl_notify'
 end
